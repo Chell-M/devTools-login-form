@@ -5,72 +5,62 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 function App() {
   const [password, setPassword] = useState('')
-  const [passwordError, setPasswordError] = useState('')
-  const [email, setEmail] = useState('')
-  const [emailError, setEmailError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState('')
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/; // At least 8 chars, 1 lowercase, 1 uppercase, 1 digit
+  const emailRegex = /^\S+@\S+\.\S+$/; // Basic email validation
 
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-  const handlePasswordChange = (e) => {
-    const newPassword = e.target.value
-    setPassword(newPassword)
-    if (!passwordRegex.test(newPassword)) {
-      return;
-    } else {
-      setPasswordError('')
-    }
-  }
-
-  const handleEmailChange = (e) => {
-    const newEmail = e.target.value
-    setEmail(newEmail)
-    if (!emailRegex.test(newEmail)) {
-      return;
-    } else {
-      return setEmailError('')
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    if (name === 'email') {
+      setEmail(value);
+    } else if (name === 'password') {
+      setPassword(value);
     }
   }
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    if (emailError || passwordError) {
-      alert('Sucessful Login')
-    } else {
-      alert('error, invalid Password or Email')
+    if (!emailRegex.test(email)) {
+      alert('Please enter a valid email address.')
+      return;
     }
+
+    if (!passwordRegex.test(password)) {
+      alert('Password must be at least 8 characters and include uppercase, lowercase, number, and special character.')
+      return;
+    }
+    alert('Successful Login')
+  }
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
   }
 
   return (
     <div className="App">
       <header className="App-header">
         <div className="headers">
-          <h3 className="dev-tools">devtools.tech</h3>
-          <div className="login-container">
-            <h2>Welcome to Devtools Tech</h2>
-            <h1>Login</h1>
-          </div>
+          <h3>devtools.tech</h3>
+          <h2>Welcome to Devtools Tech</h2>
+          <h1>Login</h1>
           <form className='form' onSubmit={handleSubmit}>
             <input
-              value={email}
+              name="email"
               placeholder="Email"
-              onChange={handleEmailChange}
+              onChange={handleInputChange}
             />
             <div className="password-input-box">
               <input
+                name="password"
                 className="password"
                 type={showPassword ? 'text' : 'password'}
-                value={password}
                 placeholder='Password'
-                onChange={handlePasswordChange}
+                onChange={handleInputChange}
               />
-              <FontAwesomeIcon className="eye-icon"
+              <FontAwesomeIcon
+                className="eye-icon"
                 icon={showPassword ? faEye : faEyeSlash}
                 onClick={togglePasswordVisibility}
               />
@@ -86,13 +76,14 @@ function App() {
           <button
             className="login-button"
             onClick={handleSubmit}
-            type="submit">Login</button>
-          <p className="no-account">
-            Don't have an account?
-            <a href="#" className="get-started"> Get Started</a></p>
+            type="submit">Login
+          </button>
+          <p className="no-account">Don't have an account?
+            <a href="#" className="get-started">Get Started</a>
+          </p>
         </div>
-      </header >
-    </div >
+      </header>
+    </div>
   );
 }
 
